@@ -31,6 +31,7 @@ namespace AspNetCore.Fundamentals.WebApp
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddTransient(typeof(AspNetCore.Fundamentals.Store.EmployeeDbContext));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
