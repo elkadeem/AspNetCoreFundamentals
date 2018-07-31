@@ -1,0 +1,55 @@
+﻿@model AspNetCore.Fundamentals.Domain.Dto.EmployeeDto
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="IdNo" class="control-label"></label>
+            <input asp-for="IdNo" class="form-control" />
+            <span asp-validation-for="IdNo"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="BirthDate" class="control-label"></label>
+            <input asp-for="BirthDate" class="form-control" />
+            <span asp-validation-for="BirthDate"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="City" class="control-label"></label>
+            <input asp-for="City" class="form-control" />
+            <span asp-validation-for="City"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label asp-for="Line1" class="control-label"></label>
+            <textarea asp-for="Line1" class="form-control"></textarea>
+            <span asp-validation-for="Line1"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label asp-for="Line2" class="control-label"></label>
+            <textarea asp-for="Line2" class="form-control"></textarea>
+            <span asp-validation-for="Line2"></span>
+        </div>
+    </div>
+</div>

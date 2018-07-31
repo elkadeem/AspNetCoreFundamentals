@@ -1,0 +1,61 @@
+﻿@page
+@model AspNetCore.Fundamentals.WebApp.Pages.Employees.IndexModel
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="row mb20">
+    <div class="col-md-12">
+        <div class="title-heading">@ViewData["Title"]</div>
+        <form method="Get">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label asp-for="Critiria.Name" class="control-label"></label>
+                        <input type="text" asp-for="Critiria.Name" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label asp-for="Critiria.IdNo" class="control-label"></label>
+                        <input type="text" asp-for="Critiria.IdNo" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-left">
+                    <div class="form-group">
+                        <a asp-page="Create" class="btn btn-primary">Create New Employee</a>
+                        <input type="submit" value="Search" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </form>
+        <form method="post">
+            <table class="table table-striped rwd-table">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Employees[0].IdNo)</th>
+                    <th>@Html.DisplayNameFor(model => model.Employees[0].Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.Employees[0].BirthDate)</th>
+                    <th>@Html.DisplayNameFor(model => model.Employees[0].City)</th>
+                    <th>Options</th>
+                </tr>
+                @foreach (var employee in Model.Employees)
+                {
+                    <tr>
+                        <td>@employee.IdNo</td>
+                        <td>@employee.Name</td>
+                        <td>@employee.BirthDate</td>
+                        <td>@employee.City</td>
+                        <td>
+                            <a asp-page="./Details" asp-route-id="@employee.Id" class="btn btn-default">Delails</a>
+                            <a asp-page="./Edit" asp-route-id="@employee.Id" class="btn btn-primary">Edit</a>
+                            <input asp-page-handler="Delete" asp-route-id="@employee.Id"
+                                   onclick="return confirm('Are you sure, delete employee:@employee.Name');"
+                                   type="submit" value="Delete" class="btn btn-danger" />
+                        </td>
+                    </tr>
+                }
+            </table>
+        </form>
+    </div>
+</div>
