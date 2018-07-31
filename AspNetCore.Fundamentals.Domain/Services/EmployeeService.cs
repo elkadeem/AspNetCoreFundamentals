@@ -1,6 +1,7 @@
 ﻿using AspNetCore.Fundamentals.Domain.Dto;
 using AspNetCore.Fundamentals.Domain.Model;
 using AspNetCore.Fundamentals.Domain.Repository;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,13 @@ namespace AspNetCore.Fundamentals.Domain.Services
     public class EmployeeService
     {
         private readonly IEmployeesRepository _repository;
-        public EmployeeService(IEmployeesRepository repository)
+        private readonly ILogger<EmployeeService> _logger;
+
+        public EmployeeService(IEmployeesRepository repository
+            , ILogger<EmployeeService> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
 #pragma warning disable S4457 // Parameter validation in "async"/"await" methods should be wrapped
@@ -31,6 +36,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
 
             await _repository.Add(employee);
             await _repository.Save();
+            _logger.LogInformation($"Employee {employee.Name} has been added.");
             return true;
         }
 
@@ -52,6 +58,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
 
             await _repository.Update(employee);
             await _repository.Save();
+            _logger.LogInformation($"Employee {employee.Name} has been Updated.");
             return true;
         }
 
@@ -68,6 +75,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
 
             await _repository.Delete(employee);
             await _repository.Save();
+            _logger.LogInformation($"Employee {employee.Name} has been deleted.");
             return true;
         }
 

@@ -4,16 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCore.Fundamentals.Domain.Dto;
 using AspNetCore.Fundamentals.Domain.Services;
+using AspNetCore.Fundamentals.WebApp.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 namespace AspNetCore.Fundamentals.WebApp.Pages.Employees
 {
-    public class CreateModel : PageModel
+    public class CreateModel : BasePageModel
     {
         private readonly EmployeeService _employeeService;
 
-        public CreateModel(EmployeeService employeeService)
+        public CreateModel(EmployeeService employeeService
+            , ILogger<CreateModel> logger) : base(logger)
         {
             if (employeeService == null)
                 throw new ArgumentNullException(nameof(employeeService));
@@ -26,12 +29,20 @@ namespace AspNetCore.Fundamentals.WebApp.Pages.Employees
         
         public async Task<ActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-                return Page();
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Page();
 
-            var result = await _employeeService.AddEmployee(Employee);
-            if (result)
-                return  RedirectToPage("./Index");
+                var result = await _employeeService.AddEmployee(Employee);
+                if (result)
+                    return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, ex.Message);                
+            }
+            
 
             return Page();
         }

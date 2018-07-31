@@ -4,16 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCore.Fundamentals.Domain.Dto;
 using AspNetCore.Fundamentals.Domain.Services;
+using AspNetCore.Fundamentals.WebApp.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 namespace AspNetCore.Fundamentals.WebApp.Pages.Employees
 {
-    public class IndexModel : PageModel
+    public class IndexModel : BasePageModel
     {
         private readonly EmployeeService _employeeService;
 
-        public IndexModel(EmployeeService employeeService)
+        public IndexModel(EmployeeService employeeService
+            , ILogger<DetailsModel> logger) : base(logger)
         {
             if (employeeService == null)
                 throw new ArgumentNullException(nameof(employeeService));
@@ -40,15 +43,22 @@ namespace AspNetCore.Fundamentals.WebApp.Pages.Employees
 
         public async Task<ActionResult> OnPostDeleteAsync(Guid id)
         {
-            //Guid employeeId = Guid.NewGuid();///Guid.Parse(Guid.);
-            var employee = await _employeeService.GetEmployeeById(id);
-            if (employee == null)
-                return NotFound();
+            try
+            {
+                var employee = await _employeeService.GetEmployeeById(id);
+                if (employee == null)
+                    return NotFound();
 
-            var result = await _employeeService.DeleteEmployee(employee);
-            if (result)
-                return RedirectToPage("./Index");
+                var result = await _employeeService.DeleteEmployee(employee);
+                if (result)
+                    return RedirectToPage("./Index");
 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, ex.Message);                
+            }
+            
             return Page();
         }
 
