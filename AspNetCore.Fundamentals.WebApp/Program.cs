@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 
 namespace AspNetCore.Fundamentals.WebApp
 {
@@ -14,17 +15,33 @@ namespace AspNetCore.Fundamentals.WebApp
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args)
+            var logger = NLog.Web.NLogBuilder
+                .ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            try
+            {
+                logger.Debug("Initiate Main");
+                CreateWebHostBuilder(args)
                 .Build().Run();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
+            finally
+            {
+                NLog.LogManager.Shutdown();
+            }
+            
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)                
                 .UseStartup<Startup>()
-                .ConfigureLogging((hostingContext, logging) => {
-                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                    logging.AddConsole();
-                    logging.AddDebug();
-                });
+                .ConfigureLogging((logging) => {
+                    logging.ClearProviders(); // Clear other providers
+                    logging.SetMinimumLevel(LogLevel.Trace);                    
+                })
+                .UseNLog();
     }
 }
