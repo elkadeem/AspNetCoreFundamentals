@@ -69,6 +69,7 @@ namespace AspNetCore.Fundamentals.WebApp
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+                
             app.UseMvc();
         }
     }

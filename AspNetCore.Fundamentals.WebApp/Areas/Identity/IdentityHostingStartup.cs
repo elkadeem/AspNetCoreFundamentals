@@ -32,6 +32,22 @@ namespace AspNetCore.Fundamentals.WebApp.Areas.Identity
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
 
+                services.AddAuthentication()
+                .AddFacebook(facebookOptions => {
+                    facebookOptions.AppId = context.Configuration["Authentication:Facebook:AppId"];
+                    facebookOptions.AppSecret = context.Configuration["Authentication:Facebook:AppSecret"];
+                }).AddTwitter(twitterOptions => {
+                    twitterOptions.ConsumerKey = context.Configuration["Authentication:Twitter:ConsumerKey"];
+                    twitterOptions.ConsumerSecret = context.Configuration["Authentication:Twitter:ConsumerSecret"];
+                })
+                .AddGoogle(googleOptions => {
+                    googleOptions.ClientId = context.Configuration["Authentication:Google:ClientId"];
+                    googleOptions.ClientSecret = context.Configuration["Authentication:Google:ClientSecret"];
+                }).AddMicrosoftAccount(microsoftOptions => {
+                    microsoftOptions.ClientId = context.Configuration["Authentication:Microsoft:ApplicationId"];
+                    microsoftOptions.ClientSecret = context.Configuration["Authentication:Microsoft:Password"];
+                });
+
                 services.Configure<IdentityOptions>(options =>
                 {
                     options.Password.RequiredLength = 8;
@@ -53,8 +69,8 @@ namespace AspNetCore.Fundamentals.WebApp.Areas.Identity
                 //    options.LogoutPath = "/Identity/Account/Logout";
                 //});
 
-                services.AddSingleton<IEmailSender, EmailSender>();
-
+                services.AddSingleton<IEmailSender, LoggerEmailSender>();
+                services.AddSingleton<ISmsSender, LoggerSmsSender>();
             });
         }
     }

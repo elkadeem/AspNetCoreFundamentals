@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace AspNetCore.Fundamentals.WebApp.Areas.Identity.Services
 {
-    public class EmailSender : IEmailSender
+    public class LoggerEmailSender : IEmailSender
     {
-        private readonly ILogger<EmailSender> _logger;
+        private readonly ILogger<LoggerEmailSender> _logger;
 
-        public EmailSender(ILogger<EmailSender> logger)
+        public LoggerEmailSender(ILogger<LoggerEmailSender> logger)
         {
             _logger = logger;
         }

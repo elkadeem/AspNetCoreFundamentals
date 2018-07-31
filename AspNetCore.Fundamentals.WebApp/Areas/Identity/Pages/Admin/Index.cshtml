@@ -1,0 +1,36 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        
+            <table class="table">
+                <tr>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Full Name</th>
+                    <th>Options</th>
+                </tr>                
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>@user.FullName</td>
+                        <td>
+                            <a asp-page="./UserRoles" asp-route-id="@user.Id">الأدوار</a>
+                        </td>
+                    </tr>
+                }
+            </table>
+       
+    </div>
+</div>
+

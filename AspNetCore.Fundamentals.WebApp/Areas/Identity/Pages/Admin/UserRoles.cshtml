@@ -1,0 +1,46 @@
+﻿@page "{id:Guid}"
+@model UserRolesModel
+@{
+    ViewData["Title"] = "User Roles";
+}
+
+<h2>@ViewData["Title"]</h2>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="AppUser.Email"></label>
+                    <input asp-for="AppUser.Email" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <input type="hidden" name="Id" value="@Model.AppUser.Id" />
+                    <label asp-for="AppUser.FullName"></label>
+                    <input asp-for="AppUser.FullName" class="form-control" />
+                </div>
+                @if (Model.UserRoles != null)
+                {
+                <div class="form-group">
+                    <label asp-for="Roles"></label>
+                    <div class="checkbox">
+                        @foreach (SelectListItem item in Model.UserRoles)
+                        {
+                            <label><input type="checkbox" name="Roles" @(item.Selected? "checked" : "") value="@item.Value" />@item.Text</label>
+                        }
+                    </div>
+                    <span asp-validation-for="Roles"></span>
+                </div>
+                }
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default">Log in</button>
+                </div>
+
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
