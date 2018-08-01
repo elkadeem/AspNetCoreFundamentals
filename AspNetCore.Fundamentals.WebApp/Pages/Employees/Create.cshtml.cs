@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using AspNetCore.Fundamentals.Domain.Dto;
 using AspNetCore.Fundamentals.Domain.Services;
 using AspNetCore.Fundamentals.WebApp.Base;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
 namespace AspNetCore.Fundamentals.WebApp.Pages.Employees
 {
+    [Authorize(Policy = "AdminOrHR")]
     public class CreateModel : BasePageModel
     {
         private readonly EmployeeService _employeeService;

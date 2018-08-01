@@ -9,13 +9,13 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label asp-for="Employee.IdNo" class="control-label"></label>
-                        <input asp-for="Employee.IdNo" class="form-control" readonly />                        
+                        <input asp-for="Employee.IdNo" class="form-control" readonly />
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label asp-for="Employee.Name" class="control-label"></label>
-                        <input asp-for="Employee.Name" class="form-control" readonly />                        
+                        <input asp-for="Employee.Name" class="form-control" readonly />
                     </div>
                 </div>
             </div>
@@ -24,13 +24,13 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label asp-for="Employee.BirthDate" class="control-label"></label>
-                        <input asp-for="Employee.BirthDate" class="form-control" readonly  />                        
+                        <input asp-for="Employee.BirthDate" class="form-control" readonly />
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label asp-for="Employee.City" class="control-label"></label>
-                        <input asp-for="Employee.City" class="form-control" readonly />                        
+                        <input asp-for="Employee.City" class="form-control" readonly />
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label asp-for="Employee.Line1" class="control-label"></label>
-                        <textarea asp-for="Employee.Line1" class="form-control" readonly ></textarea>                        
+                        <textarea asp-for="Employee.Line1" class="form-control" readonly></textarea>
                     </div>
                 </div>
             </div>
@@ -48,16 +48,26 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label asp-for="Employee.Line2" class="control-label"></label>
-                        <textarea asp-for="Employee.Line2" class="form-control" readonly ></textarea>                        
+                        <textarea asp-for="Employee.Line2" class="form-control" readonly></textarea>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12 text-left">   
+                <div class="col-md-12 text-left">
                     <a asp-page="Edit" asp-route-id="@Model.Employee.Id" class="btn btn-default">Edit</a>
                     <a asp-page="Index" class="btn btn-primary">Back</a>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row mb20">
+    <div class="col-md-12">
+        <div class="title-heading">@ViewData["Title"]</div>
+        <div>
+            <vc:user-claims />
         </div>
     </div>
 </div>

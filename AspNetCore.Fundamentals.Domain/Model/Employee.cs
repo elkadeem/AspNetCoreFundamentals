@@ -9,6 +9,7 @@ namespace AspNetCore.Fundamentals.Domain.Model
     {
         private string _idNo;
         private string _name;
+        private double _salary;
 
         private Employee()
         {
@@ -62,6 +63,23 @@ namespace AspNetCore.Fundamentals.Domain.Model
 
         public Address Address { get; set; }
 
+        public double Salary
+        {
+            get
+            {
+                return _salary;
+            }
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                _salary = value;
+            }
+        }
+
+        public string Phone { get; set; }
+
+        public string Email { get; set; }
 
     }
 }

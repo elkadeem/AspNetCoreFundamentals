@@ -32,7 +32,7 @@ namespace AspNetCore.Fundamentals.WebApp.Areas.Identity
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
 
-                services.AddAuthentication()
+                services.AddAuthentication()               
                 .AddFacebook(facebookOptions => {
                     facebookOptions.AppId = context.Configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = context.Configuration["Authentication:Facebook:AppSecret"];

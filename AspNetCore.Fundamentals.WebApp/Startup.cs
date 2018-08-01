@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AspNetCore.Fundamentals.Domain.Repository;
 using AspNetCore.Fundamentals.Domain.Services;
 using AspNetCore.Fundamentals.Store;
+using AspNetCore.Fundamentals.WebApp.Autherization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,21 +36,51 @@ namespace AspNetCore.Fundamentals.WebApp
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            
-            services.AddDbContext<EmployeeDbContext>(opt => {
+
+            services.AddDbContext<EmployeeDbContext>(opt =>
+            {
                 opt.UseSqlServer(Configuration.GetConnectionString("EmployeeConnetionString"));
             });
 
             services.AddScoped<IEmployeesRepository, EmployeesRepository>();
             services.AddTransient<EmployeeService>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-                //.AddRazorPagesOptions(options => {
-                //    options.AllowAreas = true;
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("OnlyAdmins", config =>
+                {
+                    config.RequireRole("Admin");
+                });
 
-                //    options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
-                //    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
-                //});
+                //The relation is And
+                options.AddPolicy("AdminOrHR", config =>
+                {
+                    config.RequireRole("Admin")
+                    //.RequireClaim("Department", "HR")
+                    ;
+                });
+
+                //The relation is And
+                options.AddPolicy("AdminOrHR2", config =>
+                {
+                    config.AddRequirements(new RolesRequirement("Admin")
+                        , new DepartmentsRequirement("HR"));
+                });
+            });
+
+            services.AddSingleton<IAuthorizationHandler, AdminOrHRAuthorizationHandler>();
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddRazorPagesOptions(options =>
+                 {
+                     options.AllowAreas = true;
+                     // Set Autherization on folder
+                     options.Conventions.AuthorizeFolder("/Employees");
+                     options.Conventions.AuthorizeAreaFolder("Identity", "/Admin", "OnlyAdmins");
+                     
+                 });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,7 +101,7 @@ namespace AspNetCore.Fundamentals.WebApp
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-                
+
             app.UseMvc();
         }
     }

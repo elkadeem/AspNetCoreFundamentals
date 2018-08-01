@@ -5,15 +5,18 @@ using System.Threading.Tasks;
 using AspNetCore.Fundamentals.Domain.Dto;
 using AspNetCore.Fundamentals.Domain.Services;
 using AspNetCore.Fundamentals.WebApp.Base;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
 namespace AspNetCore.Fundamentals.WebApp.Pages.Employees
 {
+    
     public class IndexModel : BasePageModel
     {
         private readonly EmployeeService _employeeService;
+
 
         public IndexModel(EmployeeService employeeService
             , ILogger<DetailsModel> logger) : base(logger)
@@ -31,6 +34,7 @@ namespace AspNetCore.Fundamentals.WebApp.Pages.Employees
         [BindProperty(SupportsGet = true)]
         public SearchModel Critiria { get; set; }
 
+        [Authorize(Roles = "Admin")]
         public async Task OnGetAsync()
         {
             var result = await _employeeService.GetEmployees(Critiria.IdNo
@@ -41,6 +45,7 @@ namespace AspNetCore.Fundamentals.WebApp.Pages.Employees
             TotalItemsCount = result.TotalItems;
         }
 
+        
         public async Task<ActionResult> OnPostDeleteAsync(Guid id)
         {
             try
