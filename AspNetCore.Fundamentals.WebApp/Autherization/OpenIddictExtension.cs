@@ -120,9 +120,8 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                     var descriptor = new OpenIddictApplicationDescriptor
                     {
                         ClientId = "swagger",
-                        DisplayName = "swagger",
-                        PostLogoutRedirectUris = { new Uri($"http://localhost:53817/swagger/ui/o2c.html") },
-                        RedirectUris = { new Uri($"http://localhost:53817/swagger/ui/o2c.html") },
+                        DisplayName = "swagger",                        
+                        RedirectUris = { new Uri($"https://localhost:44370/swagger/oauth2-redirect.html") },
                         Permissions =
                         {
                             OpenIddictConstants.Permissions.Endpoints.Authorization,                            
@@ -145,8 +144,9 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                     {
                         ClientId = "myconsoleapp",
                         ClientSecret = "AF615078-3373-49B1-9E60-FCA96621D6F5",
-                        DisplayName = "myconsoleapp",   
-                        
+                        DisplayName = "myconsoleapp",
+                        PostLogoutRedirectUris = { new Uri("https://localhost:44356/signout-callback-oidc") },
+                        RedirectUris = { new Uri("https://localhost:44356/signin-oidc") },
                         Permissions =
                         {
                             OpenIddictConstants.Permissions.Endpoints.Token,

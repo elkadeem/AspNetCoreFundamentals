@@ -106,18 +106,8 @@ namespace AspNetCore.Fundamentals.WebApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-                        
-            app.UseSwaggerUi3(typeof(Startup).GetTypeInfo().Assembly, settings =>
-            {                
-                settings.GeneratorSettings.DefaultPropertyNameHandling =
-                    PropertyNameHandling.CamelCase;
-                                
-                settings.OAuth2Client = new OAuth2ClientSettings()
-                {
-                    ClientId = "swagger",
-                    AppName = "swagger",                   
-                };
-            });
+
+            app.UseSwaggerWithOAuth();
 
             app.UseAuthentication();
 
