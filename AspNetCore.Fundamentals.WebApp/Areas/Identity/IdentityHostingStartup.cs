@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AspNetCore.Fundamentals.WebApp.Areas.Identity.Data;
 using AspNetCore.Fundamentals.WebApp.Areas.Identity.Services;
 using AspNetCore.Fundamentals.WebApp.Models;
@@ -9,6 +11,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using OpenIddict.Abstractions;
 
 [assembly: HostingStartup(typeof(AspNetCore.Fundamentals.WebApp.Areas.Identity.IdentityHostingStartup))]
 namespace AspNetCore.Fundamentals.WebApp.Areas.Identity
@@ -19,10 +23,13 @@ namespace AspNetCore.Fundamentals.WebApp.Areas.Identity
         {
             builder.ConfigureServices((context, services) =>
             {
-            services.AddDbContext<IdentityDbContext>(options =>
-                options.UseSqlServer(context.Configuration.GetConnectionString("IdentityDbContextConnection"))
-                //options.UseInMemoryDatabase(Guid.NewGuid().ToString())
-                        );
+                services.AddDbContext<IdentityDbContext>(options =>
+                {
+                    options.UseSqlServer(context.Configuration.GetConnectionString("IdentityDbContextConnection"));
+
+                    options.UseOpenIddict();
+                    //options.UseInMemoryDatabase(Guid.NewGuid().ToString())
+                });
 
                 //services.AddDefaultIdentity<AppUser>()
                 //    .AddEntityFrameworkStores<IdentityDbContext>();
@@ -32,27 +39,42 @@ namespace AspNetCore.Fundamentals.WebApp.Areas.Identity
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
 
-                services.AddAuthentication()               
-                .AddFacebook(facebookOptions => {
+                services.AddAuthentication()
+                .AddJwtBearer(options => {
+                    var siningKeys = new List<SigningCredentials>();
+                    siningKeys.AddDevelopmentCertificate();
+                    options.TokenValidationParameters.IssuerSigningKey = siningKeys.Select(c => c.Key).First();
+                    options.TokenValidationParameters.RoleClaimType = OpenIddictConstants.Claims.Role;
+                    options.TokenValidationParameters.NameClaimType = OpenIddictConstants.Claims.Name;
+                    options.TokenValidationParameters.ValidAudience = "resource_server";
+                    options.TokenValidationParameters.ValidIssuer = "https://localhost:44370/";
+                })
+                .AddFacebook(facebookOptions =>
+                {
                     facebookOptions.AppId = context.Configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = context.Configuration["Authentication:Facebook:AppSecret"];
-                }).AddTwitter(twitterOptions => {
+                }).AddTwitter(twitterOptions =>
+                {
                     twitterOptions.ConsumerKey = context.Configuration["Authentication:Twitter:ConsumerKey"];
                     twitterOptions.ConsumerSecret = context.Configuration["Authentication:Twitter:ConsumerSecret"];
                 })
-                .AddGoogle(googleOptions => {
+                .AddGoogle(googleOptions =>
+                {
                     googleOptions.ClientId = context.Configuration["Authentication:Google:ClientId"];
                     googleOptions.ClientSecret = context.Configuration["Authentication:Google:ClientSecret"];
-                }).AddMicrosoftAccount(microsoftOptions => {
+                }).AddMicrosoftAccount(microsoftOptions =>
+                {
                     microsoftOptions.ClientId = context.Configuration["Authentication:Microsoft:ApplicationId"];
                     microsoftOptions.ClientSecret = context.Configuration["Authentication:Microsoft:Password"];
                 });
 
                 services.Configure<IdentityOptions>(options =>
-                {
-                    options.Password.RequiredLength = 8;
+                {                   
 
+                    options.Password.RequiredLength = 8;
+                    
                     options.Lockout.MaxFailedAccessAttempts = 10;
+
                     options.Lockout.AllowedForNewUsers = true;
 
                     options.SignIn.RequireConfirmedEmail = true;

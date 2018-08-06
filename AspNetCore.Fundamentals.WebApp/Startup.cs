@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using AspNetCore.Fundamentals.Domain.Repository;
 using AspNetCore.Fundamentals.Domain.Services;
@@ -15,6 +16,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NJsonSchema;
+using NSwag.AspNetCore;
 
 namespace AspNetCore.Fundamentals.WebApp
 {
@@ -42,6 +45,8 @@ namespace AspNetCore.Fundamentals.WebApp
                 opt.UseSqlServer(Configuration.GetConnectionString("EmployeeConnetionString"));
             });
 
+            services.ConfigOpenIddict();
+
             services.AddScoped<IEmployeesRepository, EmployeesRepository>();
             services.AddTransient<EmployeeService>();
 
@@ -56,6 +61,7 @@ namespace AspNetCore.Fundamentals.WebApp
                 options.AddPolicy("AdminOrHR", config =>
                 {
                     config.RequireRole("Admin")
+
                     //.RequireClaim("Department", "HR")
                     ;
                 });
@@ -76,8 +82,9 @@ namespace AspNetCore.Fundamentals.WebApp
                      options.AllowAreas = true;
                      // Set Autherization on folder
                      options.Conventions.AuthorizeFolder("/Employees");
+
                      options.Conventions.AuthorizeAreaFolder("Identity", "/Admin", "OnlyAdmins");
-                     
+
                  });
 
 
@@ -99,10 +106,24 @@ namespace AspNetCore.Fundamentals.WebApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+                        
+            app.UseSwaggerUi3(typeof(Startup).GetTypeInfo().Assembly, settings =>
+            {                
+                settings.GeneratorSettings.DefaultPropertyNameHandling =
+                    PropertyNameHandling.CamelCase;
+                                
+                settings.OAuth2Client = new OAuth2ClientSettings()
+                {
+                    ClientId = "swagger",
+                    AppName = "swagger",                   
+                };
+            });
 
             app.UseAuthentication();
 
+            OpenIddictExtension.InitializeAsync(app.ApplicationServices).GetAwaiter().GetResult();
             app.UseMvc();
+
         }
     }
 }

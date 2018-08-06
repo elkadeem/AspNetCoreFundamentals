@@ -6,6 +6,7 @@ using AspNetCore.Fundamentals.WebApp.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.EntityFrameworkCore.Models;
 
 namespace AspNetCore.Fundamentals.WebApp.Models
 {
@@ -15,6 +16,8 @@ namespace AspNetCore.Fundamentals.WebApp.Models
             : base(options)
         {
         }
+
+        public DbSet<OpenIddictApplication> OpenIddictApplications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

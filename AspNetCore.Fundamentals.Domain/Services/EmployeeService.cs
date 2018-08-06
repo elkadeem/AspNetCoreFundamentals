@@ -36,6 +36,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
 
             await _repository.Add(employee);
             await _repository.Save();
+            model.Id = employee.Id;
             _logger.LogInformation($"Employee {employee.Name} has been added.");
             return true;
         }
@@ -47,7 +48,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            Employee employee = await _repository.GetEmployeeById(model.Id);
+            Employee employee = await _repository.GetEmployeeById(model.Id.Value);
             if (employee == null)
                 throw new ArgumentException("Employee is not exist", nameof(model));
 
@@ -69,7 +70,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            Employee employee = await _repository.GetEmployeeById(model.Id);
+            Employee employee = await _repository.GetEmployeeById(model.Id.Value);
             if (employee == null)
                 throw new ArgumentException("Employee is not exist", nameof(model));
 

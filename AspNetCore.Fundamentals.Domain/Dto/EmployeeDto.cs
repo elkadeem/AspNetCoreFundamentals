@@ -6,8 +6,8 @@ using System.Text;
 namespace AspNetCore.Fundamentals.Domain.Dto
 {
     public class EmployeeDto
-    {
-        public Guid Id { get; set; }
+    {        
+        public Guid? Id { get; set; }
 
         [Required]
         [StringLength(10, MinimumLength =10)]

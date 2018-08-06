@@ -12,7 +12,8 @@ using Microsoft.Extensions.Logging;
 
 namespace AspNetCore.Fundamentals.WebApp.Pages.Employees
 {
-    [Authorize(Policy = "AdminOrHR")]
+    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Employee")]
     public class CreateModel : BasePageModel
     {
         private readonly EmployeeService _employeeService;
