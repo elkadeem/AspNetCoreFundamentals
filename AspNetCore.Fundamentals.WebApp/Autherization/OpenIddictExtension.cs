@@ -1,4 +1,5 @@
-﻿using AspNetCore.Fundamentals.WebApp.Models;
+﻿using AspNet.Security.OpenIdConnect.Primitives;
+using AspNetCore.Fundamentals.WebApp.Models;
 using Microsoft.Extensions.DependencyInjection;
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
@@ -26,6 +27,12 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
 
                 options.EnableAuthorizationEndpoint("/connect/authorize")
                 .EnableTokenEndpoint("/connect/token");
+
+                options.RegisterScopes(OpenIdConnectConstants.Scopes.Email,
+                                           OpenIdConnectConstants.Scopes.Profile,
+                                           OpenIddictConstants.Scopes.Roles);
+
+                options.EnableRequestCaching();
 
                 options.AllowAuthorizationCodeFlow();
                 options.AllowClientCredentialsFlow();
@@ -123,6 +130,54 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                             OpenIddictConstants.Permissions.Scopes.Email,
                             OpenIddictConstants.Permissions.Scopes.Profile,
                             OpenIddictConstants.Permissions.Scopes.Roles
+                        }
+                    };
+
+
+
+                    await manager.CreateAsync(descriptor);
+                }
+
+
+                if (await manager.FindByClientIdAsync("myconsoleapp") == null)
+                {
+                    var descriptor = new OpenIddictApplicationDescriptor
+                    {
+                        ClientId = "myconsoleapp",
+                        ClientSecret = "AF615078-3373-49B1-9E60-FCA96621D6F5",
+                        DisplayName = "myconsoleapp",   
+                        
+                        Permissions =
+                        {
+                            OpenIddictConstants.Permissions.Endpoints.Token,
+                            OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,                            
+                        }
+                    };
+
+                    await manager.CreateAsync(descriptor);
+                }
+
+
+                if (await manager.FindByClientIdAsync("RazorPage") == null)
+                {
+                    var descriptor = new OpenIddictApplicationDescriptor
+                    {
+                        ClientId = "RazorPage",
+                        ClientSecret = "{02DB89C0-5726-442A-98A4-78B6C57B2AD1}",
+                        DisplayName = "Razor Page Application",
+                        PostLogoutRedirectUris = { new Uri("https://localhost:44356/signout-callback-oidc") },
+                        RedirectUris = { new Uri("https://localhost:44356/signin-oidc") },
+                        Permissions =
+                        {
+                            OpenIddictConstants.Permissions.Endpoints.Authorization,
+                            OpenIddictConstants.Permissions.Endpoints.Logout,
+                            OpenIddictConstants.Permissions.Endpoints.Token,
+                            OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                            OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                            OpenIddictConstants.Permissions.Scopes.Email,
+                            OpenIddictConstants.Permissions.Scopes.Profile,
+                            OpenIddictConstants.Permissions.Scopes.Roles,
+                            OpenIddictConstants.Permissions.Scopes.OpenId
                         }
                     };
 

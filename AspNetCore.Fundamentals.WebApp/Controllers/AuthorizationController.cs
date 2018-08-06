@@ -17,6 +17,7 @@ using OpenIddict.EntityFrameworkCore.Models;
 using OpenIddict.Server;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -215,6 +216,37 @@ namespace AspNetCore.Fundamentals.WebApp
                 return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
 
+            else if(request.IsClientCredentialsGrantType())
+            {
+                var application = await _applicationManager.FindByClientIdAsync(request.ClientId);
+                if (application == null)
+                    return BadRequest(new OpenIdConnectResponse {
+                        Error = OpenIddictConstants.Errors.UnauthorizedClient,
+                        ErrorDescription = "Invalid Client"
+                    });
+
+                if(application.Permissions
+                    .Contains(OpenIddictConstants.Permissions.GrantTypes.ClientCredentials))
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIddictConstants.Errors.UnsupportedGrantType,
+                        ErrorDescription = "The specified grant type is not supported."
+                    });
+                }
+
+                var id = new ClaimsIdentity("Application", OpenIddictConstants.Claims.Name
+                , OpenIddictConstants.Claims.Role);
+
+                id.AddClaim(new Claim(OpenIddictConstants.Claims.Name, request.ClientId));
+                id.AddClaim(new Claim(OpenIddictConstants.Claims.Subject, request.ClientId));
+                var principal = new ClaimsPrincipal(id);
+                var ticket = new AuthenticationTicket(principal, null
+                    , OpenIddictServerDefaults.AuthenticationScheme);
+
+                return SignIn(ticket.Principal, ticket.AuthenticationScheme);
+            }
+
             return BadRequest(new OpenIdConnectResponse
             {
                 Error = OpenIddictConstants.Errors.UnsupportedGrantType,
@@ -233,27 +265,18 @@ namespace AspNetCore.Fundamentals.WebApp
             /*
              I remove this becuase i don't change default claims types
              */
-            //var principal = await _signInManager.CreateUserPrincipalAsync(user);
 
-            //Create New Claim 
-            var id = new ClaimsIdentity("Application", OpenIddictConstants.Claims.Name
-                , OpenIddictConstants.Claims.Role);
+            var principal = await _signInManager.CreateUserPrincipalAsync(user);
+            ((ClaimsIdentity)principal.Identity).AddClaim(new Claim(OpenIddictConstants.Claims.Name, user.UserName));
+            ((ClaimsIdentity)principal.Identity).AddClaim(new Claim(OpenIddictConstants.Claims.Subject, user.Id));
 
-            id.AddClaim(new Claim(OpenIddictConstants.Claims.Name, user.UserName));
-            id.AddClaim(new Claim(OpenIddictConstants.Claims.Subject, user.Id));
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = ((ClaimsIdentity)principal.Identity).Claims
+                .Where(c => c.ValueType == ClaimTypes.Role);
             foreach (var role in roles)
             {
-                id.AddClaim(new Claim(OpenIddictConstants.Claims.Role, role));
+                ((ClaimsIdentity)principal.Identity)
+                    .AddClaim(new Claim(OpenIddictConstants.Claims.Role, role.Value));
             }
-
-            var claims = await _userManager.GetClaimsAsync(user);
-            foreach (var claim in claims)
-            {
-                id.AddClaim(claim);
-            }
-
-            var principal = new ClaimsPrincipal(id);
             // Create a new authentication ticket holding the user identity.
             var ticket = new AuthenticationTicket(principal, properties,
                 OpenIddictServerDefaults.AuthenticationScheme);
