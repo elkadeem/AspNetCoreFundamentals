@@ -38,16 +38,17 @@ namespace AspNetCore.Fundamentals.ClientWebApp
             services.AddAuthentication(config =>
             {
                 config.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                config.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
             .AddCookie(options =>
             {
                 options.LoginPath = "/Login";
+                options.LogoutPath = "/logout";
             }).AddOpenIdConnect(options =>
             {
                 options.ClientId = "RazorPage";
                 options.ClientSecret = "{02DB89C0-5726-442A-98A4-78B6C57B2AD1}";
 
-                //options.RequireHttpsMetadata = false;
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.SaveTokens = true;
 
@@ -65,9 +66,18 @@ namespace AspNetCore.Fundamentals.ClientWebApp
                     // Disable the built-in JWT claims mapping feature.
                     InboundClaimTypeMap = new Dictionary<string, string>()
                 };
-
+                
                 options.TokenValidationParameters.NameClaimType = "name";
                 options.TokenValidationParameters.RoleClaimType = "role";
+
+                //options.Events.OnRedirectToIdentityProviderForSignOut = context =>
+                //{
+                //    var logoutUri = options.Authority + "";
+                //    context.Response.Redirect(logoutUri);
+                //    context.HandleResponse();
+                //    return Task.CompletedTask;
+                //};
+                        
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

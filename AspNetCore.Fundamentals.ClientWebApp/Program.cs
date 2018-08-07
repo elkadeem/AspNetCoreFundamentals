@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
+using System;
 
 namespace AspNetCore.Fundamentals.ClientWebApp
 {
@@ -14,11 +10,32 @@ namespace AspNetCore.Fundamentals.ClientWebApp
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var logger = NLog.Web.NLogBuilder
+                .ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            try
+            {
+                logger.Debug("Initiate Main");
+                CreateWebHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
+            finally
+            {
+                NLog.LogManager.Shutdown();
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .ConfigureLogging((logging) =>
+                {
+                    logging.ClearProviders(); // Clear other providers
+                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                })
+                .UseNLog();
     }
 }

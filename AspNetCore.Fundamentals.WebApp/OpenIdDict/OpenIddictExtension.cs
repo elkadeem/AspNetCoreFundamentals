@@ -21,12 +21,25 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                 .UseDbContext<IdentityDbContext>();
             }).AddServer(options =>
             {
+                //This will register OpenIddict Custom Model Binder Provider (OpenIddictMvcBinderProvider)
+                //This provider used for OpenIdConnectRequest, OpenIdConnectResponse
                 options.UseMvc();
 
-                options.AddDevelopmentSigningCertificate();                
+                // Add Development Signing Certificate
+                // In production you will need to add you certificate
+                options.AddDevelopmentSigningCertificate();
 
-                options.EnableAuthorizationEndpoint("/connect/authorize")
-                .EnableTokenEndpoint("/connect/token");
+                //Enable Token endpoint this end point must be implemented to get token
+                //The Token is user claims, so you will need to connect to your resource server
+                //Her resource server (Asp.net Identity)
+                options.EnableTokenEndpoint("/connect/token");
+
+                //Enable autherization Endpoint to enable autherization code flow
+                options.EnableAuthorizationEndpoint("/connect/authorize");
+
+                //Enable logout endpoint 
+                options.EnableLogoutEndpoint("/connect/logout");
+                
 
                 options.RegisterScopes(OpenIdConnectConstants.Scopes.Email,
                                            OpenIdConnectConstants.Scopes.Profile,
@@ -39,11 +52,11 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                 options.AllowImplicitFlow();
                 options.AllowPasswordFlow();
                 options.AllowRefreshTokenFlow();
-                                
-                options.UseJsonWebTokens();
+
+                //options.UseJsonWebTokens();
                 options.AcceptAnonymousClients();
             });
-            
+
             return services;
         }
 
@@ -97,7 +110,7 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                     {
                         ClientId = "postman",
                         DisplayName = "Postman",
-                        RedirectUris = { new Uri("https://www.getpostman.com/oauth2/callback") },                        
+                        RedirectUris = { new Uri("https://www.getpostman.com/oauth2/callback") },
                         Permissions =
                         {
                             OpenIddictConstants.Permissions.Endpoints.Authorization,
@@ -120,12 +133,12 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                     var descriptor = new OpenIddictApplicationDescriptor
                     {
                         ClientId = "swagger",
-                        DisplayName = "swagger",                        
+                        DisplayName = "swagger",
                         RedirectUris = { new Uri($"https://localhost:44370/swagger/oauth2-redirect.html") },
                         Permissions =
                         {
-                            OpenIddictConstants.Permissions.Endpoints.Authorization,                            
-                            OpenIddictConstants.Permissions.GrantTypes.Implicit,                            
+                            OpenIddictConstants.Permissions.Endpoints.Authorization,
+                            OpenIddictConstants.Permissions.GrantTypes.Implicit,
                             OpenIddictConstants.Permissions.Scopes.Email,
                             OpenIddictConstants.Permissions.Scopes.Profile,
                             OpenIddictConstants.Permissions.Scopes.Roles
@@ -150,7 +163,7 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                         Permissions =
                         {
                             OpenIddictConstants.Permissions.Endpoints.Token,
-                            OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,                            
+                            OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
                         }
                     };
 
