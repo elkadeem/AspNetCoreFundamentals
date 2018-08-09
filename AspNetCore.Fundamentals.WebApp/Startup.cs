@@ -50,6 +50,8 @@ namespace AspNetCore.Fundamentals.WebApp
             services.AddScoped<IEmployeesRepository, EmployeesRepository>();
             services.AddTransient<EmployeeService>();
 
+            
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("OnlyAdmins", config =>

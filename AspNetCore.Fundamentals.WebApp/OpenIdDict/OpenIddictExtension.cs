@@ -53,7 +53,7 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                 options.AllowPasswordFlow();
                 options.AllowRefreshTokenFlow();
 
-                //options.UseJsonWebTokens();
+                options.UseJsonWebTokens();
                 options.AcceptAnonymousClients();
             });
 

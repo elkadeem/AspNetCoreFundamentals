@@ -39,7 +39,7 @@ namespace AspNetCore.Fundamentals.WebApp.Areas.Identity
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
 
-                services.AddAuthentication()
+                services.AddAuthentication()                
                 .AddJwtBearer(options => {
                     var siningKeys = new List<SigningCredentials>();
                     siningKeys.AddDevelopmentCertificate();
@@ -62,6 +62,7 @@ namespace AspNetCore.Fundamentals.WebApp.Areas.Identity
                 {
                     googleOptions.ClientId = context.Configuration["Authentication:Google:ClientId"];
                     googleOptions.ClientSecret = context.Configuration["Authentication:Google:ClientSecret"];
+                    
                 }).AddMicrosoftAccount(microsoftOptions =>
                 {
                     microsoftOptions.ClientId = context.Configuration["Authentication:Microsoft:ApplicationId"];
