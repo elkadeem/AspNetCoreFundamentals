@@ -42,6 +42,7 @@ namespace AspNetCore.FundamentalsWithGoogleOnly
                 options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
             }
              */
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options => options.LoginPath = "/Account/login")
                 .AddGoogle(googleOptions =>

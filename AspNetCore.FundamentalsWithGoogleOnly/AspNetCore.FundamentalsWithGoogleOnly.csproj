@@ -18,6 +18,9 @@
     <Content Update="Pages\Account\Logout.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Pages\Shared\Components\AuthenticationProperties\Default.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Pages\Shared\Components\UserClaims\Default.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

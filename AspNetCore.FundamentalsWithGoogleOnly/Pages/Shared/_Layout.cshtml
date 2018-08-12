@@ -47,6 +47,10 @@
         <hr />
         <vc:UserClaims />
         @await Component.InvokeAsync("UserClaims")
+        <hr />
+        <h1>Authentication Properties</h1>
+        @await Component.InvokeAsync("AuthenticationProperties")
+        
         <footer>
             <p>&copy; 2018 - AspNetCore.FundamentalsWithGoogleOnly</p>
         </footer>

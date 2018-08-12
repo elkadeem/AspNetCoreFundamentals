@@ -1,0 +1,19 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@model AuthenticationProperties
+
+<ul>
+    <li>Authentication Type: @Model.a</li>
+</ul>
+<table class="table">
+    <tr>
+        <th>Token Name</th>
+        <th>Token Value</th>
+    </tr>
+    @foreach (var token in Model.GetTokens())
+    {
+        <tr>
+            <td>@token.Name</td>
+            <td>@token.Value</td>
+        </tr>
+    }
+</table>
