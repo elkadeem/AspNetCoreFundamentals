@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -35,14 +36,10 @@ namespace AspNetCore.FundamentalsWithGoogleOnly
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            /*
-             options =>
-            {
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-            }
-             */
-
+            //var handler = new System.Net.Http.HttpClientHandler();
+            //handler.Proxy = new WebProxy(new Uri("http://127.0.0.1:8888/"), true);
+            //System.Net.Http.HttpClient client = new System.Net.Http.HttpClient(handler);  
+            
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options => options.LoginPath = "/Account/login")
                 .AddGoogle(googleOptions =>
@@ -53,6 +50,7 @@ namespace AspNetCore.FundamentalsWithGoogleOnly
                     googleOptions.SaveTokens = true;
                     googleOptions.ClaimActions.MapJsonSubKey("urn:google:image", "image", "url");
                     googleOptions.ClaimActions.Remove(ClaimTypes.GivenName);
+                    //googleOptions.Backchannel = client;
                 });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
