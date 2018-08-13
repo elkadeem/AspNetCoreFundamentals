@@ -145,7 +145,25 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                         }
                     };
 
+                    await manager.CreateAsync(descriptor);
+                }
 
+                if (await manager.FindByClientIdAsync("swaggerforwebapi") == null)
+                {
+                    var descriptor = new OpenIddictApplicationDescriptor
+                    {
+                        ClientId = "swaggerforwebapi",
+                        DisplayName = "swaggerforwebapi",
+                        RedirectUris = { new Uri($"https://localhost:44340/swagger/oauth2-redirect.html") },
+                        Permissions =
+                        {
+                            OpenIddictConstants.Permissions.Endpoints.Authorization,
+                            OpenIddictConstants.Permissions.GrantTypes.Implicit,
+                            OpenIddictConstants.Permissions.Scopes.Email,
+                            OpenIddictConstants.Permissions.Scopes.Profile,
+                            OpenIddictConstants.Permissions.Scopes.Roles
+                        }
+                    };
 
                     await manager.CreateAsync(descriptor);
                 }
