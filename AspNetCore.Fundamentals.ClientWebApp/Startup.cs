@@ -48,36 +48,21 @@ namespace AspNetCore.Fundamentals.ClientWebApp
             {
                 options.ClientId = "RazorPage";
                 options.ClientSecret = "{02DB89C0-5726-442A-98A4-78B6C57B2AD1}";
-
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.SaveTokens = true;
-
                 options.ResponseType = OpenIdConnectResponseType.Code;
                 options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
-
-                options.Authority = "https://localhost:44370/";
-                                
+                options.Authority = "https://localhost:44370/";                                
                 options.Scope.Add("email");
                 options.Scope.Add("roles");
                 options.Scope.Add("profile");
-
                 options.SecurityTokenValidator = new JwtSecurityTokenHandler
                 {
                     // Disable the built-in JWT claims mapping feature.
                     InboundClaimTypeMap = new Dictionary<string, string>()
-                };
-                
+                };                
                 options.TokenValidationParameters.NameClaimType = "name";
-                options.TokenValidationParameters.RoleClaimType = "role";
-
-                //options.Events.OnRedirectToIdentityProviderForSignOut = context =>
-                //{
-                //    var logoutUri = options.Authority + "";
-                //    context.Response.Redirect(logoutUri);
-                //    context.HandleResponse();
-                //    return Task.CompletedTask;
-                //};
-                        
+                options.TokenValidationParameters.RoleClaimType = "role";                        
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

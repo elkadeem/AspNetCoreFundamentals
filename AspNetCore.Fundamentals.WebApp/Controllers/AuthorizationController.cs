@@ -150,7 +150,6 @@ namespace AspNetCore.Fundamentals.WebApp
             Debug.Assert(request.IsTokenRequest(),
                 "The OpenIddict binder for ASP.NET Core MVC is not registered. " +
                 "Make sure services.AddOpenIddict().AddMvcBinders() is correctly called.");
-
             if (request.IsPasswordGrantType())
             {
                 var user = await _userManager.FindByNameAsync(request.Username);
@@ -162,7 +161,6 @@ namespace AspNetCore.Fundamentals.WebApp
                         ErrorDescription = "The username/password couple is invalid."
                     });
                 }
-
                 // Validate the username/password parameters and ensure the account is not locked out.
                 var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
                 if (!result.Succeeded)
@@ -173,7 +171,6 @@ namespace AspNetCore.Fundamentals.WebApp
                         ErrorDescription = "The username/password couple is invalid."
                     });
                 }
-
                 // Create a new authentication ticket.
                 var ticket = await CreateTicketAsync(request, user);
 

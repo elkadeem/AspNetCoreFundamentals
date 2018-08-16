@@ -30,23 +30,18 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
                 options.AddDevelopmentSigningCertificate();
 
                 //Enable Token endpoint this end point must be implemented to get token
-                //The Token is user claims, so you will need to connect to your resource server
-                //Her resource server (Asp.net Identity)
+                //The Token is user claims, so you will need to connect to your resource server                
                 options.EnableTokenEndpoint("/connect/token");
-
                 //Enable autherization Endpoint to enable autherization code flow
                 options.EnableAuthorizationEndpoint("/connect/authorize");
-
                 //Enable logout endpoint 
-                options.EnableLogoutEndpoint("/connect/logout");
-                
+                options.EnableLogoutEndpoint("/connect/logout");                
 
                 options.RegisterScopes(OpenIdConnectConstants.Scopes.Email,
                                            OpenIdConnectConstants.Scopes.Profile,
                                            OpenIddictConstants.Scopes.Roles);
 
                 options.EnableRequestCaching();
-
                 options.AllowAuthorizationCodeFlow();
                 options.AllowClientCredentialsFlow();
                 options.AllowImplicitFlow();
@@ -67,9 +62,7 @@ namespace AspNetCore.Fundamentals.WebApp.Autherization
             {
                 var context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
                 await context.Database.EnsureCreatedAsync();
-
                 var manager = scope.ServiceProvider.GetRequiredService<OpenIddictApplicationManager<OpenIddictApplication>>();
-
                 if (await manager.FindByClientIdAsync("mvc") == null)
                 {
                     var descriptor = new OpenIddictApplicationDescriptor
