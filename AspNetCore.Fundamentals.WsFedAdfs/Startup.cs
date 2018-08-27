@@ -2,19 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AspNetCore.Fundamentals.AzureAD
+namespace AspNetCore.Fundamentals.WsFedAdfs
 {
     public class Startup
     {
@@ -35,17 +33,31 @@ namespace AspNetCore.Fundamentals.AzureAD
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-                .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+            //var handler = new System.Net.Http.HttpClientHandler();
+            //handler.Proxy = new WebProxy(new Uri("http://127.0.0.1:8888/"), true);
+            //System.Net.Http.HttpClient client = new System.Net.Http.HttpClient(handler);
 
-            services.AddMvc(options =>
+            services.AddAuthentication(sharedOptions =>
             {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
+                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
             })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .AddWsFederation(options =>
+                {
+                    //Microsoft.AspNetCore.Authentication.WsFederation.WsFederationDefaults.AuthenticationScheme
+                    // MetadataAddress represents the Active Directory instance used to authenticate users.
+                    options.MetadataAddress = Configuration["ADFS:MetadataAddress"];
+
+                    // Wtrealm is the app's identifier in the Active Directory instance.
+                    // For ADFS, use the relying party's identifier, its WS-Federation Passive protocol URL:
+                    options.Wtrealm = "https://localhost:44328/";
+
+                    //options.Backchannel = client;
+                })
+                 .AddCookie();
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,7 +78,6 @@ namespace AspNetCore.Fundamentals.AzureAD
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-
             app.UseMvc();
         }
     }

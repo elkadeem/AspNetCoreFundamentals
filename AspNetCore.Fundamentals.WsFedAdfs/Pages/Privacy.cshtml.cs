@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace AspNetCore.Fundamentals.WSFedAD.Pages
+namespace AspNetCore.Fundamentals.WsFedAdfs.Pages
 {
-    public class IndexModel : PageModel
+    public class PrivacyModel : PageModel
     {
         public void OnGet()
         {
-            var user = this.User;
         }
     }
 }

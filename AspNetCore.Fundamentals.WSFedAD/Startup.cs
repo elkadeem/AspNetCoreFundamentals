@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
@@ -33,6 +34,10 @@ namespace AspNetCore.Fundamentals.WSFedAD
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            //var handler = new System.Net.Http.HttpClientHandler();
+            //handler.Proxy = new WebProxy(new Uri("http://127.0.0.1:8888/"), true);
+            //System.Net.Http.HttpClient client = new System.Net.Http.HttpClient(handler);
+
             services.AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -47,6 +52,7 @@ namespace AspNetCore.Fundamentals.WSFedAD
 
                     // For AAD, use the App ID URI from the app registration's Properties blade:
                     options.Wtrealm = "https://elkadeemhotmail.onmicrosoft.com/516f8ce1-59ec-4cd8-ad5a-6b3c2cb12ae3";
+                    //options.Backchannel = client;
                 })
                  .AddCookie();
 
