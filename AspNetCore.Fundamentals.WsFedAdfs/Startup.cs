@@ -51,7 +51,7 @@ namespace AspNetCore.Fundamentals.WsFedAdfs
 
                     // Wtrealm is the app's identifier in the Active Directory instance.
                     // For ADFS, use the relying party's identifier, its WS-Federation Passive protocol URL:
-                    options.Wtrealm = "https://localhost:44328/";
+                    options.Wtrealm = "https://localhost:44328/";                   
 
                     //options.Backchannel = client;
                 })
@@ -78,6 +78,7 @@ namespace AspNetCore.Fundamentals.WsFedAdfs
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
             app.UseMvc();
         }
     }
