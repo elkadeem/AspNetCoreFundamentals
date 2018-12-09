@@ -22,7 +22,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
         }
 
 #pragma warning disable S4457 // Parameter validation in "async"/"await" methods should be wrapped
-        public virtual async Task<bool> AddEmployee(EmployeeDto model)
+        public async Task<bool> AddEmployee(EmployeeDto model)
 #pragma warning restore S4457 // Parameter validation in "async"/"await" methods should be wrapped
         {
             if (model == null)
@@ -42,7 +42,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
         }
 
 #pragma warning disable S4457 // Parameter validation in "async"/"await" methods should be wrapped
-        public virtual async Task<bool> UpdateEmployee(EmployeeDto model)
+        public async Task<bool> UpdateEmployee(EmployeeDto model)
 #pragma warning restore S4457 // Parameter validation in "async"/"await" methods should be wrapped
         {
             if (model == null)
@@ -64,7 +64,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
         }
 
 #pragma warning disable S4457 // Parameter validation in "async"/"await" methods should be wrapped
-        public virtual async Task<bool> DeleteEmployee(EmployeeDto model)
+        public async Task<bool> DeleteEmployee(EmployeeDto model)
 #pragma warning restore S4457 // Parameter validation in "async"/"await" methods should be wrapped
         {
             if (model == null)
@@ -80,7 +80,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
             return true;
         }
 
-        public virtual async Task<EmployeeDto> GetEmployeeById(Guid id)
+        public async Task<EmployeeDto> GetEmployeeById(Guid id)
         {            
             Employee employee = await _repository.GetEmployeeById(id);
             return employee == null? null : new EmployeeDto {
@@ -94,7 +94,7 @@ namespace AspNetCore.Fundamentals.Domain.Services
             };
         }
 
-        public virtual Task<(List<EmployeeDto> Employees, int TotalItems)> GetEmployees(string idNo, string name
+        public Task<(List<EmployeeDto> Employees, int TotalItems)> GetEmployees(string idNo, string name
             , int pageIndex, int pageSize)
         {
             if (pageIndex < 0)
